@@ -1,37 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useContactsCrud } from "../context/ContactsCrudContext";
 
-const EditContact = ({ updateContactHandler }) => {
-  // State for contact details
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-
-  // Get the location and navigate from React Router v6
-  const location = useLocation();
+const EditContact = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { id,name, email } = location.state.contact;
 
-  useEffect(() => {
-    // Check if location.state is available before accessing location.state.contact
-    if (location.state && location.state.contact) {
-      const { name, email } = location.state.contact;
-      setName(name);
-      setEmail(email);
-    } else {
-      // Redirect back to the home page if location.state is null or contact is not found
-      navigate("/");
-    }
-  }, [location.state, navigate]); // Add navigate to dependency array for redirects
+    // State for contact details
+  const [newName, setNewName] = useState(name);
+  const [newEmail, setNewEmail] = useState(email);
+  const {updateContactHandler} = useContactsCrud();
+
 
   // Handle form submission to update the contact
   const update = (e) => {
     e.preventDefault();
-    if (name.trim() === "" || email.trim() === "") {
+    if (newName === "" || newEmail === "") {
       alert("All fields are mandatory!");
       return;
     }
-    updateContactHandler({ id: location.state.contact.id, name, email });
-    setName(""); // Clear fields after submission
-    setEmail("");
+    updateContactHandler({ id, name:newName, email:newEmail });
+    setNewName(""); // Clear fields after submission
+    setNewEmail("");
     navigate("/"); // Navigate to the home page after update
   };
 
@@ -45,8 +36,8 @@ const EditContact = ({ updateContactHandler }) => {
             type="text"
             name="name"
             placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)} // Update name field
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)} // Update name field
           />
         </div>
         <div className="field">
@@ -55,8 +46,8 @@ const EditContact = ({ updateContactHandler }) => {
             type="text"
             name="email"
             placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} // Update email field
+            value={newEmail}
+            onChange={(e) => setNewEmail(e.target.value)} // Update email field
           />
         </div>
         <button className="ui button blue">Update</button>

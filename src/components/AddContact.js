@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Use useNavigate instead of useHistory
+import { useContactsCrud } from "../context/ContactsCrudContext";
 
-const AddContact = ({ addContactHandler }) => {
+const AddContact = () => {
   // State for the form fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const { addContactHandler } = useContactsCrud(); // Use the addContactHandler from the context
   
   const navigate = useNavigate(); // Hook for programmatic navigation
 
